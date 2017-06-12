@@ -22,7 +22,7 @@ $(function(){
                         message: "Uh Oh, looks like you've reached your limit"
 
                     };
-
+                    chrome.notifications.clear('limitNotif');
                     chrome.notifications.create('limitNotif', notifOptions);
                 }
             });
