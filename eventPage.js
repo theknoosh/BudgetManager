@@ -12,26 +12,39 @@ function isInt(value){
 }
 
 chrome.contextMenus.onClicked.addListener(function(clickData){
-    if (clickData.menuItemID == "spendMoney" && clickData.selectionText) {
-        if (isInt(clickData.selectionText)) {
+    
+    // alert(clickData.menuItemId);
+
+    if (clickData.selectionText && clickData.menuItemId == "spendMoney") {
+
+        if (parseInt(clickData.selectionText)) {
             chrome.storage.sync.get(['total','limit'],function(budget){
                 var newTotal = 0;
+
                 if (budget.total) {
                     newTotal += parseInt(budget.total);
                 }
                 newTotal += parseInt(clickData.selectionText);
-                chrome.storage.sync.set(newTotal, function(){
+
+                chrome.storage.sync.set({'total': newTotal}, function(){
+                    
                     if (newTotal >= budget.limit) {
+                        var overLimit = newTotal - budget.limit;
                         var notifOptions = {
                         type: 'basic',
                         iconUrl: 'icon48.png',
-                        title: 'Limit reached',
-                        message: "Uh Oh, looks like you've reached your limit"
-                        };
-                        chrome.notifications.create('limitNotif', notifOptions);
+                        title: 'Limit exceeded',
+                        message: "Uh Oh, looks like you're $" + overLimit + " over your limit"
+                    };
+                        chrome.notifications.clear('selectionNotif');
+                        chrome.notifications.create('selectionNotif', notifOptions);
                     }
                 });
             });
         }
     }
+});
+
+chrome.storage.onChanged.addListener(function(changes, storageName){
+
 });

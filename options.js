@@ -11,6 +11,7 @@ $(function(){
         }
     });
     $('#resetTotal').click(function(){
+        console.log("Reset called");
         chrome.storage.sync.set({'total':0},function(){
             var notifOptions = {
                 type: 'basic',
